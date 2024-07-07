@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class LoanApplicationRequest {
-    Double amount;
-    int loanTerm;
+    private Double amount;
+    private int loanTerm;
 }

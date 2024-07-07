@@ -26,6 +26,9 @@ public class LoanController {
     public ResponseEntity<?> createLoanApplication(@RequestHeader("Username") String username,
                                                    @RequestHeader("Password") String password,
                                                    @RequestBody LoanApplicationRequest loanApplicationRequest) {
+        if(loanApplicationRequest.getAmount() <= 0 || loanApplicationRequest.getLoanTerm() < 0){
+            return ResponseEntity.badRequest().body("Invalid Amount or Loan Term provided");
+        }
         User user = userService.getUserByCreds(username, password);
         if(user != null && user.getUserType().equals(UserType.CUSTOMER)){
             return ResponseEntity.ok(loanApplicationService.createLoanApplication(loanApplicationRequest.getAmount(), loanApplicationRequest.getLoanTerm(), user.getId()));
@@ -35,13 +38,13 @@ public class LoanController {
 
     @PostMapping("/approve-application")
     public ResponseEntity<?> approveLoanApplication(@RequestHeader("Username") String username,
-                                                                  @RequestHeader("Password") String password,
-                                                                  @RequestBody LoanApprovalRequest loanApprovalRequest) {
-
+                                                    @RequestHeader("Password") String password,
+                                                    @RequestBody LoanApprovalRequest loanApprovalRequest) {
+        if(loanApprovalRequest.getLoanApplicationId() < 0) return ResponseEntity.badRequest().body("Invalid Application Id provided");
         User user = userService.getUserByCreds(username, password);
         if(user != null && user.getUserType().equals(UserType.ADMIN)){
             LoanApplication approvedApplication = loanApplicationService.approveLoanApplication(loanApprovalRequest.getLoanApplicationId(), user.getId());
-            if(approvedApplication == null) return ResponseEntity.ok("No Matching Application found");
+            if(approvedApplication == null) return ResponseEntity.ok("No Matching Application found in PENDING state");
             return ResponseEntity.ok(approvedApplication);
         }
         return ResponseEntity.ok("No matching admin found!");
@@ -61,9 +64,14 @@ public class LoanController {
     public ResponseEntity<?> addLoanRepayment(@RequestHeader("Username") String username,
                                               @RequestHeader("Password") String password,
                                               @RequestBody LoanRepaymentRequest loanRepaymentRequest) {
+        if(loanRepaymentRequest.getAmount() <= 0 || loanRepaymentRequest.getLoanApplicationId() < 0){
+            return ResponseEntity.badRequest().body("Invalid Amount or Application ID provided");
+        }
         User user = userService.getUserByCreds(username, password);
         if(user != null && user.getUserType().equals(UserType.CUSTOMER)){
-            return ResponseEntity.ok(loanApplicationService.addLoanRepayment(loanRepaymentRequest, user.getId()));
+            LoanApplication loanApplication = loanApplicationService.addLoanRepayment(loanRepaymentRequest, user.getId());
+            if(loanApplication == null) return ResponseEntity.ok("No PENDING repayments for the given application ID for this user");
+            return ResponseEntity.ok(loanApplication);
         }
         return ResponseEntity.ok("No matching customer found!");
     }

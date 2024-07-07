@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class LoanRepayment {
-    int id;
-    Double amount;
-    LoanRepaymentStatus status;
-    Integer userId;
+    private int id;
+    private Double amount;
+    private LoanRepaymentStatus status;
+    private Integer userId;
 }

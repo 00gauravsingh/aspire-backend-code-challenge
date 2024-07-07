@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 @Data
 public class LoanApplication {
-    int id;
-    Double amountRequired;
-    int loanTerm;
-    Integer userId;
-    LoanApplicationStatus status;
-    Integer approvedByUserId;
-    ArrayList<LoanRepayment> loanRepayments = new ArrayList<>();
+    private int id;
+    private Double amountRequired;
+    private int loanTerm;
+    private Integer userId;
+    private LoanApplicationStatus status;
+    private Integer approvedByUserId;
+    private ArrayList<LoanRepayment> loanRepayments = new ArrayList<>();
 }

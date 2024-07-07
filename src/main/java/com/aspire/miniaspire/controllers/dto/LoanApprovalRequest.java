@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class LoanApprovalRequest {
-    int loanApplicationId;
+    private int loanApplicationId;
 }
