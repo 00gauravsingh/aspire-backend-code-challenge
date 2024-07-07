@@ -71,7 +71,8 @@ public class LoanApplicationService {
         if(loanApplication != null && loanApplication.getStatus().equals(LoanApplicationStatus.APPROVED) && loanApplication.getUserId().equals(userId)){
             List<LoanRepayment> loanRepayments = loanApplication.getLoanRepayments();
             for(int i=0; i<loanRepayments.size(); i++){
-                if(loanRepayments.get(i).getAmount() <= repaymentAmount && loanRepayments.get(i).getStatus().equals(LoanRepaymentStatus.PENDING)){
+                if(loanRepayments.get(i).getAmount() > repaymentAmount) throw new RuntimeException("Repayment Amount is more than entered by the user!");
+                if(loanRepayments.get(i).getStatus().equals(LoanRepaymentStatus.PENDING)){
                     loanRepayments.get(i).setStatus(LoanRepaymentStatus.PAID);
                     if(i==loanRepayments.size()-1) loanApplication.setStatus(LoanApplicationStatus.PAID);
                     return true;

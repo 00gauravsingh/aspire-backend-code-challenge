@@ -134,10 +134,22 @@ class MiniaspireApplicationTests {
 		result = loanApplicationService.markLoanRepayment(loanApplication2, 3, 100.0);
 		Assertions.assertEquals(false, result); //Invalid user id
 
-		result = loanApplicationService.markLoanRepayment(loanApplication2, 1, 50.0);
-		Assertions.assertEquals(false, result); //Invalid Amount
-
 		result = loanApplicationService.markLoanRepayment(loanApplication2, 1, 100.0);
-		Assertions.assertEquals(true, result); //Invalid Amount
+		Assertions.assertEquals(true, result);
+	}
+
+	@Test
+	void addLoanRepaymentWithLessAmount(){
+		LoanApplicationService loanApplicationService = new LoanApplicationService();
+		LoanApplication loanApplication = loanApplicationService.populateLoanApplication(500.0, 5, 0,1);
+		loanApplicationStore.add(loanApplication);
+
+		LoanApplication loanApplication2 = loanApplicationStore.getById(1);
+
+		loanApplication2.setStatus(LoanApplicationStatus.APPROVED);
+		loanApplication2.setApprovedByUserId(3);
+
+		Assertions.assertThrows(RuntimeException.class, () -> loanApplicationService.markLoanRepayment(loanApplication2, 1, 50.0));
+
 	}
 }
