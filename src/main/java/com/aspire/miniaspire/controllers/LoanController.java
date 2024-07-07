@@ -2,8 +2,8 @@ package com.aspire.miniaspire.controllers;
 
 import com.aspire.miniaspire.controllers.dto.LoanApplicationRequest;
 import com.aspire.miniaspire.controllers.dto.LoanApprovalRequest;
+import com.aspire.miniaspire.controllers.dto.LoanRepaymentRequest;
 import com.aspire.miniaspire.domain.LoanApplication;
-import com.aspire.miniaspire.domain.LoanRepayment;
 import com.aspire.miniaspire.domain.User;
 import com.aspire.miniaspire.enums.UserType;
 import com.aspire.miniaspire.services.LoanApplicationService;
@@ -11,8 +11,6 @@ import com.aspire.miniaspire.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/loan")
@@ -60,7 +58,13 @@ public class LoanController {
     }
 
     @PostMapping("/add-repayment")
-    public ResponseEntity<LoanRepayment> addLoanRepayment(LoanRepayment loanRepayment) {
-        return null;
+    public ResponseEntity<?> addLoanRepayment(@RequestHeader("Username") String username,
+                                              @RequestHeader("Password") String password,
+                                              @RequestBody LoanRepaymentRequest loanRepaymentRequest) {
+        User user = userService.getUserByCreds(username, password);
+        if(user != null && user.getUserType().equals(UserType.CUSTOMER)){
+            return ResponseEntity.ok(loanApplicationService.addLoanRepayment(loanRepaymentRequest, user.getId()));
+        }
+        return ResponseEntity.ok("No matching customer found!");
     }
 }

@@ -1,5 +1,6 @@
 package com.aspire.miniaspire.services;
 
+import com.aspire.miniaspire.controllers.dto.LoanRepaymentRequest;
 import com.aspire.miniaspire.domain.LoanApplication;
 import com.aspire.miniaspire.domain.LoanRepayment;
 import com.aspire.miniaspire.enums.LoanApplicationStatus;
@@ -49,5 +50,21 @@ public class LoanApplicationService {
 
     public List<LoanApplication> getAllLoanApplications(Integer userId){
         return loanApplicationStore.getByUserId(userId);
+    }
+
+    public LoanApplication addLoanRepayment(LoanRepaymentRequest loanRepaymentRequest, Integer userId){
+        LoanApplication loanApplication = loanApplicationStore.getById(loanRepaymentRequest.getLoanApplicationId());
+        if(loanApplication.getUserId().equals(userId)){
+            List<LoanRepayment> loanRepayments = loanApplication.getLoanRepayments();
+            for(int i=0; i<loanRepayments.size(); i++){
+                if(loanRepayments.get(i).getAmount() <= loanRepaymentRequest.getAmount() &&
+                        loanRepayments.get(i).getStatus().equals(LoanRepaymentStatus.PENDING)){
+                    loanRepayments.get(i).setStatus(LoanRepaymentStatus.PAID);
+                    if(i==loanRepayments.size()-1) loanApplication.setStatus(LoanApplicationStatus.PAID);
+                    return loanApplication;
+                }
+            }
+        }
+        return null;
     }
 }
