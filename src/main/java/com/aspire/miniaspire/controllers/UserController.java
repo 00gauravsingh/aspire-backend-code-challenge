@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/get-all")
     public ResponseEntity<?> getAllUsers(@RequestHeader("Username") String username,
-                                                  @RequestHeader("Password") String password) {
+                                         @RequestHeader("Password") String password) {
         if(username.equals("superadmin") && password.equals("superadmin")) {
             return ResponseEntity.ok(userService.getAllUsers());
         }

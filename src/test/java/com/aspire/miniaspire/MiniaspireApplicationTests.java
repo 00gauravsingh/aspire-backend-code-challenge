@@ -1,10 +1,8 @@
 package com.aspire.miniaspire;
 
 import com.aspire.miniaspire.domain.LoanApplication;
-import com.aspire.miniaspire.domain.LoanRepayment;
 import com.aspire.miniaspire.domain.User;
 import com.aspire.miniaspire.enums.LoanApplicationStatus;
-import com.aspire.miniaspire.enums.LoanRepaymentStatus;
 import com.aspire.miniaspire.enums.UserType;
 import com.aspire.miniaspire.services.LoanApplicationService;
 import com.aspire.miniaspire.storage.LoanApplicationStore;
